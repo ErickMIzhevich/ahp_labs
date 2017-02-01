@@ -1,14 +1,12 @@
-//#pragma novector
-
 #include <iostream>
 #include <xmmintrin.h>
 #include <Windows.h>
 #include <time.h>
 #include "TimeCounter.hpp"
 
-#define NUM_OF_MATRIXES 300
-#define MATRIX_SIZE 8
-
+#define NUM_OF_MATRIXES 5
+#define MATRIX_SIZE 256
+#define TOO_LARGE_MATRIX (MATRIX_SIZE <= 16)
 
 double* matrix_mem_allocation(double*);
 double* matrix_init(double*);
@@ -17,8 +15,8 @@ void free_mem(double*);
 
 void main_work();
 void matrix_multiply(double*, double*, double*);
+void matrix_sum_result(double*, double*, double*);
 void sse_multiply(double*, double*, double*);
-
 
 int main() {
 
@@ -30,15 +28,16 @@ int main() {
 	system("pause");
 	return 0;
 }
+
 void main_work() {
 
-	double ***m1 = { NULL }, ***m2 = { NULL }, ***m_res = { NULL };
+	double ***m1 = { NULL }, ***m2 = { NULL }, ***m_res = { NULL }, *temp = { NULL };
 	TimeCounter obj;
 
 	m1 = (double***)calloc(NUM_OF_MATRIXES, sizeof(double));
 	m2 = (double***)calloc(NUM_OF_MATRIXES, sizeof(double));
 	m_res = (double***)calloc(NUM_OF_MATRIXES, sizeof(double));
-
+	
 	for (int i = 0; i < NUM_OF_MATRIXES; i++) {
 		m1[i] = (double**)calloc(NUM_OF_MATRIXES, sizeof(double));
 		m2[i] = (double**)calloc(NUM_OF_MATRIXES, sizeof(double));
@@ -52,24 +51,40 @@ void main_work() {
 		}
 	}
 
+#if TOO_LARGE_MATRIX
+	
 	show_matrix(m1[0][0]);
 	show_matrix(m2[0][0]);
+
+#endif // MATRIX_SIZE > 16	
 
 	obj.StartCounter();
 
 	for (int i = 0; i < NUM_OF_MATRIXES; i++) {
 		for (int j = 0; j < NUM_OF_MATRIXES; j++) {
-			matrix_multiply(m1[i][j], m2[i][j], m_res[i][j]);
+			for (int k = 0; k < NUM_OF_MATRIXES; k++) {
+				temp = (double*)calloc(MATRIX_SIZE * MATRIX_SIZE, sizeof(double));
+				matrix_multiply(m1[i][k], m2[j][k], temp);
+				matrix_sum_result(temp, m_res[i][j], m_res[i][j]);
+				free(temp);
+			}
 		}
 	}
 
+#if TOO_LARGE_MATRIX
+
 	printf("The result matrix: \n");
 	show_matrix(m_res[0][0]);
+
+#endif // MATRIX_SIZE > 16
+
 	printf("Time result: %lf ms\n\n", obj.GetCounter());
 
 #ifndef NULL
+
 	// size and data type of matrixes are not supported
 	sse_multiply(m1, m2, m_res);
+
 #endif // !0
 
 	for (int i = 0; i < NUM_OF_MATRIXES; i++) {
@@ -88,6 +103,15 @@ void matrix_multiply(double* matrix_a, double* matrix_b, double* matrix_res) {
 			for (int k = 0; k < MATRIX_SIZE; k++) {
 				matrix_res[i * MATRIX_SIZE + j] += matrix_a[i * MATRIX_SIZE + k] * matrix_b[j * MATRIX_SIZE + k];
 			}
+		}
+	}
+}
+
+void matrix_sum_result(double* matrix_a, double* matrix_b, double* matrix_res) {
+
+	for (int i = 0; i < MATRIX_SIZE; i++) {
+		for (int j = 0; j < MATRIX_SIZE; j++) {
+			matrix_res[i * MATRIX_SIZE + j] += matrix_a[i * MATRIX_SIZE + j] + matrix_b[i * MATRIX_SIZE + j];
 		}
 	}
 }
