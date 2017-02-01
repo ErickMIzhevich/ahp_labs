@@ -5,9 +5,9 @@
 Development environment: VS2013
 
 variant:
-  - Size of matrix: 8x8
+  - Size of matrix: 256x256
   - Data type: double
-  - With sse2 vectorization speed gain: about 40-50%
+  - With sse2 vectorization speed gain: about 250%
 
 How to start vectorization mode:
 project --> propirties --> configurations -->c/c++ --> code generation -->
