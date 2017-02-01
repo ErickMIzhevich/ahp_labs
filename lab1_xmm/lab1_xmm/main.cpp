@@ -1,5 +1,3 @@
-//#pragma novector
-
 #include <iostream>
 #include <xmmintrin.h>
 #include <Windows.h>
