@@ -14,7 +14,7 @@ public:
 		if (!QueryPerformanceFrequency(&li)) {
 			std::cout << "QueryPerformanceFrequency failed!\n";
 		}
-		this->PCFreq = double(li.QuadPart) / 1000.0;
+		this->PCFreq = double(li.QuadPart) / 1.0;
 		QueryPerformanceCounter(&li);
 		this->CounterStart = li.QuadPart;
 	}

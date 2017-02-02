@@ -1,4 +1,4 @@
-#include <iostream>
+#include <stdio.h>
 #include <xmmintrin.h>
 #include <Windows.h>
 #include <time.h>
@@ -78,7 +78,7 @@ void main_work() {
 
 #endif // MATRIX_SIZE > 16
 
-	printf("Time result: %lf ms\n\n", obj.GetCounter());
+	printf("Time result: %lf sec\n\n", obj.GetCounter());
 
 #ifndef NULL
 
@@ -93,7 +93,13 @@ void main_work() {
 			free_mem(m2[i][j]);
 			free_mem(m_res[i][j]);
 		}
+		free(m1[i]);
+		free(m2[i]);
+		free(m_res[i]);
 	}
+	free(m1);
+	free(m2);
+	free(m_res);
 }
 
 void matrix_multiply(double* matrix_a, double* matrix_b, double* matrix_res) {
