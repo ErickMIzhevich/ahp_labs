@@ -4,25 +4,10 @@
 
 #define BLOCKSIZE_IN_BYTES 3145728		//32768; 262144; 3145728
 #define MAX_WAY_NUMBER 25
-#define OFFSET_IN_BYTES 16777216		// 16 Мб
+#define OFFSET_IN_BYTES 16777216		// 16 ГЊГЎ
 #define STRUCT_ARRAY_SIZE 60
 
 typedef unsigned long long int ULII;
-
-struct ArrayNode  
-{
-	__int32 next;
-	__int8 arr[STRUCT_ARRAY_SIZE];
-
-	operator __int32() { 
-		return next; 
-	}
-
-	ArrayNode& operator=(int n) {
-		next = n;
-		return *this;
-	}
-};
 
 void initArray(int* buffer, int fragmentSize, int offset, int numberOfWays);
 ULII* showAssotiativity(int buf[]); 
@@ -135,7 +120,7 @@ ULII* showAssotiativity(int buf[]) {
 		}
 		resultsTime[i] = __rdtsc() - beginTime;
 
-		// Чтобы оптимизатор не убрал цикл
+		// Г—ГІГ®ГЎГ» Г®ГЇГІГЁГ¬ГЁГ§Г ГІГ®Г° Г­ГҐ ГіГЎГ°Г Г« Г¶ГЁГЄГ«
 		if (index == 100) {
 			printf("");
 		}
